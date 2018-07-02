@@ -90,6 +90,7 @@ class Paginator extends React.Component {
                 startPage = currentPage - decrementByFive;
                 endPage = currentPage + incrementByFour ;
             }
+            
         }
  
         // calculate start and end item indexes
