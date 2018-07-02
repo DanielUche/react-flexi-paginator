@@ -14,6 +14,10 @@ const defaultProps = {
     initialPage: 1,
     pageSize: 10
 }
+
+/**
+ * Simple Paginator Component for react app
+ */
  
 class Paginator extends React.Component {
     constructor(props) {
@@ -35,7 +39,11 @@ class Paginator extends React.Component {
             this.setPage(this.props.initialPage);
         }
     }
- 
+
+    /**
+     * Updates the current page
+     * @param {number} page page number to set as the active page
+     */
     setPage(page) {
         const { items, pageSize } = this.props;
         let { pager } = this.state;
@@ -57,7 +65,13 @@ class Paginator extends React.Component {
         // call change page function in parent component
         this.props.onChangePage(pageOfItems);
     }
- 
+    
+    /**
+     * Determines how pager button are displayed on page
+     * @param {number} totalItems number of items in the array
+     * @param {number} currentPage current active page
+     * @param {number} pageSize number of items to display per page
+     */
     getPager(totalItems, currentPage, pageSize) {
         // default to first page
         currentPage = currentPage || 1;
@@ -90,7 +104,7 @@ class Paginator extends React.Component {
                 startPage = currentPage - decrementByFive;
                 endPage = currentPage + incrementByFour ;
             }
-            
+
         }
  
         // calculate start and end item indexes
@@ -113,6 +127,11 @@ class Paginator extends React.Component {
             pages: pages
         };
     }
+
+    /**
+     * Determines the upper and lower limit of the pager
+     * @param {array} arr array of objects
+     */
     getMinMax(arr) {
         let min = arr[0], max = arr[0];  
         for (let i = 1, len=arr.length; i < len; i++) {
