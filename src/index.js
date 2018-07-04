@@ -1,14 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import style from './style.css';
 
-import { isArrayEmpty, compareArraySize } from '../src/utils/common.utils';
+import { isArrayEmpty, compareArraySize, conditionalPropType } from '../src/utils/common.utils';
+
  
 const propTypes = {
     items: PropTypes.array.isRequired,
     onChangePage: PropTypes.func.isRequired,
     initialPage: PropTypes.number,
-    pageSize: PropTypes.number
-}
+    pageSize: PropTypes.number,
+    prevText: PropTypes.string,
+    firstText: PropTypes.string,
+    nextText: PropTypes.string,
+    lastText: PropTypes.string,
+    paginatorClass: PropTypes.string,
+    disabledClass: PropTypes.string,
+    activeClass: PropTypes.string,
+    fontSize: PropTypes.string,
+    useNavIcon: PropTypes.bool,
+    iconFirst: conditionalPropType(props => (props.useNavIcon && !props.iconFirst), "'iconFirst' must be string if 'useIcon' is true"),
+    iconPrev: conditionalPropType(props => (props.useNavIcon && !props.iconPrev), "'iconPrev' must be string if 'useIcon' is true"),
+    iconNext: conditionalPropType(props => (props.useNavIcon && !props.iconNext), "'iconNext must be string if 'useIcon' is true"),
+    iconLast: conditionalPropType(props => (props.useNavIcon && !props.iconLast), "'iconLast must be string if 'useIcon' is true"),
+  }
  
 const defaultProps = {
     initialPage: 1,
@@ -104,7 +119,6 @@ class Paginator extends React.Component {
                 startPage = currentPage - decrementByFive;
                 endPage = currentPage + incrementByFour ;
             }
-
         }
  
         // calculate start and end item indexes
@@ -133,18 +147,15 @@ class Paginator extends React.Component {
      * @param {array} arr array of objects
      */
     getMinMax(arr) {
-        let min = arr[0], max = arr[0];  
-        for (let i = 1, len=arr.length; i < len; i++) {
-          let v = arr[i];
-          min = (v < min) ? v : min;
-          max = (v > max) ? v : max;
-        }
-      
+        const min = Math.min.apply(null,arr);
+        const max = Math.max.apply(null,arr);
         return {"min": min, "max": max};
     }
  
     render() {
         const { pager } = this.state;
+        const { disabledClass, activeClass, paginatorClass, 
+                firstText, nextText, lastText, prevText } = this.props;
  
         if (!pager.pages || pager.pages.length <= 1) {
             // don't display pager if there is only 1 page
@@ -152,35 +163,55 @@ class Paginator extends React.Component {
         }
  
         return (
-            <ul className="pagination">
-                <li className={pager.currentPage === 1 ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(1)}>First</a>
+            <ul className={ paginatorClass ? `${paginatorClass}`: `${style.pagination}` }>
+                <li>
+                    <a onClick={() => this.setPage(1)} 
+                      className={pager.currentPage === 1 ? `${style.disabledA}`  : ''}
+                    >
+                      { firstText ?  `${firstText}`  : 'First' } 
+                    </a>
                 </li>
-                <li className={pager.currentPage === 1 ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(pager.currentPage - 1)}>Previous</a>
+                <li>
+                    <a onClick={() => this.setPage(pager.currentPage - 1)}
+                      className={pager.currentPage === 1 ? `${style.disabledA}`  : ''}
+                    >
+                       { prevText ?  `${prevText}`  : 'Previous' }
+                    </a>
                 </li>
                 { this.getMinMax(pager.pages).min > 1 && (
                     <li><a className="elli">...</a></li>
                 )}
                 {pager.pages.map((page, index) =>
-                    <li key={index} className={pager.currentPage === page ? 'active' : ''}>
-                        <a onClick={() => this.setPage(page)}>{page}</a>
+                    <li key={index}  className={pager.currentPage === page ? `${style.activeLi}`  : ''} >
+                        <a onClick={() => this.setPage(page)}
+                         className={pager.currentPage === page ? `${style.activeA}` : ''}
+                        >{page}</a>
                     </li>
                 )}
-                
+      
                 { this.getMinMax(pager.pages).max < pager.totalPages - 1 && (
                     <span>
                     <li><a className="elli">...</a></li>
-                    <li className={pager.currentPage === pager.totalPages ? 'disabled' : ''}>
-                        <a onClick={() => this.setPage(pager.totalPages)}>{pager.totalPages}</a>
+                    <li>
+                        <a onClick={() => this.setPage(pager.totalPages)}
+                          className={pager.currentPage === pager.totalPages ? `${style.disabledA}`  : ''}
+                        >{pager.totalPages}</a>
                     </li>
                     </span>
                 )}
-                <li className={pager.currentPage === pager.totalPages ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(pager.currentPage + 1)}>Next</a>
+                <li>
+                    <a onClick={() => this.setPage(pager.currentPage + 1)}
+                      className={pager.currentPage === pager.totalPages ? `${style.disabledA}`  : ''}
+                    >
+                      { nextText ?  `${nextText}`  : 'Next' }
+                    </a>
                 </li>
-                <li className={pager.currentPage === pager.totalPages ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(pager.totalPages)}>Last</a>
+                <li>
+                    <a onClick={() => this.setPage(pager.totalPages)}
+                      className={pager.currentPage === pager.totalPages ? `${style.disabledA}`  : ''}
+                    >    
+                      { lastText ?  `${lastText}`  : 'Last' }
+                    </a>
                 </li>
             </ul>
         );
