@@ -1,11 +1,16 @@
 {
   "name": "react-flexi-paginator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple react paginator component",
   "main": "build/index.js",
   "peerDependencies": {
     "react": "^16.3.2"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielUche/react-flexi-paginator.git"
+  },
+  "license": "ISC",
   "dependencies": {
     "react": "^16.3.2",
     "webpack": "3.8.1"
